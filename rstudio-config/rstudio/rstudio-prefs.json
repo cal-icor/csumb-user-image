@@ -1,0 +1,9 @@
+{
+    "initial_working_directory": "~",
+    "auto_save_on_blur": true,
+    "auto_save_on_idle": "commit",
+    "posix_terminal_shell": "bash",
+    "default_project_location": "~",
+    "restore_last_project": false,
+    "auto_save_idle_ms": 500
+}
