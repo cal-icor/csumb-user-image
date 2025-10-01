@@ -1,5 +1,7 @@
 # csumb-user-image
 
+This is the custom Jupyter user image for the California State University, Monterey Bay (CSUMB) JupyterHub deployment.
+
 See this repository's [CONTRIBUTING.md](https://github.com/cal-icor/csumb-user-image/blob/main/CONTRIBUTING.md) for instructions. 
 
 ## Building the image locally
