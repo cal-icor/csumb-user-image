@@ -1,8 +1,8 @@
 # csumb-user-image
 
-See this repository's [CONTRIBUTING.md](https://github.com/cal-icor/csumb-user-image/blob/main/CONTRIBUTING.md) for instructions. That information will eventually be migrated to docs.datahub.berkeley.edu.
+See this repository's [CONTRIBUTING.md](https://github.com/cal-icor/csumb-user-image/blob/main/CONTRIBUTING.md) for instructions. 
 
-# building the image locally
+## Building the image locally
 
 You should use [repo2docker](https://repo2docker.readthedocs.io/en/latest/) to build and use/test the image on your own device before you push and create a PR.  It's better (and typically faster) to do this first before using CI/CD.  There's no need to waste Github Action minutes to test build images when you can do this on your own device!
 
