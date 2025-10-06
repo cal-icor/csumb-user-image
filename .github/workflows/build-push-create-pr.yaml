@@ -95,7 +95,7 @@ jobs:
           for deployment in $(grep -lr ${IMAGE} deployments/**/config/common.yaml); do
             old_hash=$(grep -hA1 ${IMAGE} ${deployment} | grep tag: | awk '{print$2}')
             new_hash=${IMAGE_TAG}
-            sed -i -e "s,${IMAGE}:${old_hash},${IMAGE}:${new_hash},g" ${deployment}
+            sed -i -e "s,${old_hash},${new_hash},g" ${deployment}
             echo "Updated ${deployment} with new image tag ${new_hash}"
           done
 
