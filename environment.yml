@@ -10,7 +10,7 @@ dependencies:
   - git==2.51.0
   - jupyter-resource-usage=1.1.0
   - jupyterhub==5.3.0
-  - jupyterlab==4.4.6
+  - jupyterlab==4.4.9
   - jupyter-archive==3.4.0
   - jupyter_server==2.16.0
   - jupyterlab-git==0.51.2
