@@ -92,7 +92,7 @@ jobs:
 
       - name: Update the tag for any deployments that use this image
         run: |
-          for deployment in $(grep -lr ${IMAGE} deployments/**/config/common.yaml); do
+          for deployment in $(grep -lr ${IMAGE} deployments/**/common.yaml); do
             old_hash=$(grep -hA1 ${IMAGE} ${deployment} | grep tag: | awk '{print$2}')
             new_hash=${IMAGE_TAG}
             sed -i -e "s,${old_hash},${new_hash},g" ${deployment}
