@@ -25,7 +25,7 @@ dependencies:
   - jupyter-rsession-proxy==2.3.0
 
   # vscode
-  - code-server==4.101.1
+  - code-server==4.104.2
   - jupyter-vscode-proxy==0.6
   - jupyter-server-proxy==4.4.0
 
