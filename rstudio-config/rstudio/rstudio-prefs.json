@@ -5,5 +5,5 @@
     "posix_terminal_shell": "bash",
     "default_project_location": "~",
     "restore_last_project": false,
-    "auto_save_idle_ms": 500
+    "auto_save_idle_ms": 250
 }
