@@ -29,4 +29,4 @@ for x in \
     code-server --extensions-dir ${VSCODE_EXTENSIONS} --install-extension $x
 done
 
-echo "CONDA_DIR=${CONDA_DIR}" >> .Renviron
+echo "CONDA_DIR=${CONDA_DIR}" >> ${HOME}/.Renviron
