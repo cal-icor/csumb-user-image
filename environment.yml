@@ -52,6 +52,7 @@ dependencies:
   - r-openintro
   - r-pwr
   - r-rcolorbrewer
+  - r-remotes
   - r-rmarkdown
   - r-rstac
   - r-see
@@ -62,6 +63,7 @@ dependencies:
   - r-tidyr
   - r-tidyverse
   - r-viridis
+  - r-waffle
 
   # vscode
   - code-server==4.104.2

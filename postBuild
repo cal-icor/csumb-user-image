@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -exuo pipefail
 
-# install R packages
-#./install.R
+# install R packages not included in environment.yml
+./install.R
 
 # installing chromium browser to enable webpdf conversion using nbconvert
 export PLAYWRIGHT_BROWSERS_PATH=${CONDA_DIR}
