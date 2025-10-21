@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-set -exuo pipefail
+set -euo pipefail
+
+# install R packages not included in environment.yml
+# ./install.R
 
 # installing chromium browser to enable webpdf conversion using nbconvert
 export PLAYWRIGHT_BROWSERS_PATH=${CONDA_DIR}
@@ -29,4 +32,5 @@ for x in \
     code-server --extensions-dir ${VSCODE_EXTENSIONS} --install-extension $x
 done
 
+# set up the CONDA_DIR environment variable for Rstudio
 echo "CONDA_DIR=${CONDA_DIR}" >> ${HOME}/.Renviron
