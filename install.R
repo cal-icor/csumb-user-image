@@ -1,5 +1,9 @@
 #!/usr/bin/env Rscript
 
+r = getOption("repos")
+r["CRAN"] = "http://cran.us.r-project.org"
+options(repos = r)
+
 # Function to install R packages
 install_packages_with_versions <- function(packages) {
   available <- available.packages()
@@ -8,7 +12,8 @@ install_packages_with_versions <- function(packages) {
   if (length(to_install) > 0) {
     install.packages(to_install, available = available,
                      versions = packages[to_install],
-                     dependencies = TRUE)
+                     dependencies = TRUE,
+                     repos = "https://cloud.r-project.org")
   } else {
     cat("All packages are already installed.\n")
   }
@@ -20,7 +25,7 @@ required_packages <- c("remotes", "devtools")
 # Check and install required packages
 new_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]
 if (length(new_packages) > 0) {
-  install.packages(new_packages)
+  install.packages(new_packages, repos = "https://cloud.r-project.org")
 }
 
 packages = list(

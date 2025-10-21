@@ -7,7 +7,7 @@ channels:
 dependencies:
   # Items required for basic level functionality
   - gh-scoped-creds==4.1
-  - git==2.51.0
+  - git  #==2.51.0
   - jupyter-resource-usage=1.1.0
   - jupyterhub==5.3.0
   - jupyterlab==4.4.9
@@ -23,6 +23,11 @@ dependencies:
 
   # r2d installs jupyter-rsession-proxy, but in the base python env, not in the updated one
   - jupyter-rsession-proxy==2.3.0
+
+  # R and Rstudio
+  - r-base==4.4.2
+  - r-tidyverse==2.0.0
+  - rstudio-desktop #==2024.12.0
 
   # vscode
   - code-server==4.104.2
