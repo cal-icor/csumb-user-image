@@ -42,6 +42,7 @@ RUN apt-get update > /dev/null && \
             libnspr4 \
             libxss1 \
             libz-dev \
+            libczmq-dev \
             fonts-symbola \
             gdebi-core \
             tini \
