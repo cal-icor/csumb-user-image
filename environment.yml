@@ -1,9 +1,8 @@
-name: base-user-image
+name: csumb-user-image
 # This is the standard conda configuration file. Use this file to list
 # the conda packages that you need installed in your environment.
 channels:
   - conda-forge
-  - r
 
 dependencies:
   # Items required for basic level functionality
@@ -25,45 +24,45 @@ dependencies:
   # r2d installs jupyter-rsession-proxy, but in the base python env, not in the updated one
   - jupyter-rsession-proxy==2.3.0
 
-  # R and Rstudio
-  - r-base #==4.4.2
-  - r-tidyverse #==2.0.0
-  - rstudio-desktop #==2024.12.0
-  - r-irkernel
-  - r-car
-  - r-colorspace
-  - r-esquisse
-  - r-forcats
-  - r-gdalcubes
-  - r-ggalluvial
-  - r-ggformula
-  - r-ggmosaic
-  - r-ggrepel
-  - r-ggthemeassist
-  - r-ggthemes
-  - r-janitor
-  - r-knitr
-  - r-lock5data
-  - r-lubridate
-  # - r-mapgl
-  # - r-minioclient
-  - r-mosaic
-  - r-naniar
-  - r-openintro
-  - r-pwr
-  - r-rcolorbrewer
-  - r-remotes
-  - r-rmarkdown
-  - r-rstac
-  - r-see
-  - r-sf
-  - r-stars
-  - r-terra
-  - r-tidymodels
-  - r-tidyr
-  - r-tidyverse
-  - r-viridis
-  - r-waffle
+  # # R and Rstudio
+  # - r-base #==4.4.2
+  # - r-tidyverse #==2.0.0
+  # - rstudio-desktop #==2024.12.0
+  # - r-irkernel
+  # - r-car
+  # - r-colorspace
+  # - r-esquisse
+  # - r-forcats
+  # - r-gdalcubes
+  # - r-ggalluvial
+  # - r-ggformula
+  # - r-ggmosaic
+  # - r-ggrepel
+  # - r-ggthemeassist
+  # - r-ggthemes
+  # - r-janitor
+  # - r-knitr
+  # - r-lock5data
+  # - r-lubridate
+  # # - r-mapgl
+  # # - r-minioclient
+  # - r-mosaic
+  # - r-naniar
+  # - r-openintro
+  # - r-pwr
+  # - r-rcolorbrewer
+  # - r-remotes
+  # - r-rmarkdown
+  # - r-rstac
+  # - r-see
+  # - r-sf
+  # - r-stars
+  # - r-terra
+  # - r-tidymodels
+  # - r-tidyr
+  # - r-tidyverse
+  # - r-viridis
+  # - r-waffle
 
   # vscode
   - code-server==4.104.2
