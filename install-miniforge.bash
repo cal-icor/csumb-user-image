@@ -11,7 +11,7 @@ INSTALLER_PATH=/tmp/miniforge-installer.sh
 wget --quiet $URL -O ${INSTALLER_PATH}
 chmod +x ${INSTALLER_PATH}
 
-bash ${INSTALLER_PATH} -b -p ${CONDA_DIR}
+bash ${INSTALLER_PATH} -b -up ${CONDA_DIR}
 export PATH="${CONDA_DIR}/bin:$PATH"
 
 # Do not attempt to auto update conda or dependencies
@@ -29,9 +29,6 @@ conda clean --all -f -y
 
 # Remove the big installer so we don't increase docker image size too much
 rm ${INSTALLER_PATH}
-
-# Remove the pip cache created as part of installing mambaforge
-rm -rf /root/.cache
 
 chown -Rh $NB_USER:$NB_USER ${CONDA_DIR}
 
