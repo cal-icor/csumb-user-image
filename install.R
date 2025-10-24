@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 
-# r = getOption("repos")
-# r["CRAN"] = "https://cran.rstudio.com/"
-# options(repos = r)
+r = getOption("repos")
+r["CRAN"] = "https://cran.r-project.org/"
+options(repos = r)
 
 # Function to install R packages
 install_packages_with_versions <- function(packages) {
@@ -21,7 +21,7 @@ install_packages_with_versions <- function(packages) {
 }
 
 # List of packages to ensure are installed
-required_packages <- c("remotes", "devtools", "renv")
+required_packages <- c("remotes", "devtools")
 
 # Check and install required packages
 new_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]

@@ -1,4 +1,4 @@
-FROM rocker/rstudio:4.5.1 AS base
+FROM buildpack-deps:noble-scm AS base
 
 # Set up common env variables
 ENV TZ=America/Los_Angeles
@@ -53,6 +53,36 @@ RUN if  [ "$(dpkg-divert --truename /usr/bin/man)" = "/usr/bin/man.REAL" ]; then
     fi
 
 RUN mandb -c
+
+# These apt packages must be installed into the base stage since they are in
+# system paths rather than /srv.
+#
+# Pre-built R packages from Posit Package Manager are built against system libs
+# in jammy.
+#
+# After updating R_VERSION and rstudio-server, update Rprofile.site too.
+ENV R_VERSION=4.5.1-1.2404.0
+ENV LITTLER_VERSION=0.3.21-2.2404.0
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+RUN echo "deb https://cloud.r-project.org/bin/linux/ubuntu noble-cran40/" > /etc/apt/sources.list.d/cran.list
+RUN curl --silent --location --fail https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc > /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
+RUN apt-get update --yes > /dev/null && \
+    apt-get install --yes -qq r-base-core=${R_VERSION} r-base-dev=${R_VERSION} littler=${LITTLER_VERSION} r-cran-littler=${LITTLER_VERSION} > /dev/null
+
+# RStudio Server and Quarto
+ENV RSTUDIO_URL=https://download2.rstudio.org/server/jammy/amd64/rstudio-server-2025.09.1-401-amd64.deb
+RUN curl --silent --location --fail ${RSTUDIO_URL} > /tmp/rstudio.deb && \
+    apt install --no-install-recommends --yes /tmp/rstudio.deb && \
+    rm /tmp/rstudio.deb
+
+# For command-line access to quarto, which is installed by rstudio.
+RUN ln -s /usr/lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
+
+# Shiny Server
+ENV SHINY_SERVER_URL=https://download3.rstudio.org/ubuntu-18.04/x86_64/shiny-server-1.5.22.1017-amd64.deb
+RUN curl --silent --location --fail ${SHINY_SERVER_URL} > /tmp/shiny-server.deb && \
+    apt install --no-install-recommends --yes /tmp/shiny-server.deb && \
+    rm /tmp/shiny-server.deb
 
 # R_LIBS_USER is set by default in /etc/R/Renviron, which RStudio loads.
 # We uncomment the default, and set what we wanna - so it picks up
