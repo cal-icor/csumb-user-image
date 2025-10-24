@@ -37,6 +37,7 @@ texlive-fonts-recommended
 texlive-lang-chinese
 texlive-plain-generic
 lmodern
+libgbm1
 
 # for LS88-5 and modules basemap
 libspatialindex-dev
@@ -90,3 +91,5 @@ man
 # Unknown requirement. Perhaps remove this and the R magick package during a
 # maintenance period.
 libmagick++-dev
+cmake
+
