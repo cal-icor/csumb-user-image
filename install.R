@@ -13,19 +13,20 @@ install_packages_with_versions <- function(packages) {
     install.packages(to_install, available = available,
                      versions = packages[to_install],
                      dependencies = TRUE,
-                     repos = "https://cloud.r-project.org")
+                     repos = "https://cran.r-project.org",
+                     lib = Sys.getenv("R_LIBS_USER"))
   } else {
     cat("All packages are already installed.\n")
   }
 }
 
 # List of packages to ensure are installed
-required_packages <- c("remotes", "devtools")
+required_packages <- c("remotes", "devtools", "renv")
 
 # Check and install required packages
 new_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]
 if (length(new_packages) > 0) {
-  install.packages(new_packages, repos = "https://cloud.r-project.org")
+  install.packages(new_packages, repos = "https://cran.r-project.org", lib = Sys.getenv("R_LIBS_USER"))
 }
 
 packages = list(
@@ -71,6 +72,6 @@ packages = list(
 install_packages_with_versions(packages)
 
 # install GitHub packages
-remotes::install_github("hrbrmstr/waffle") # https://github.com/cal-icor/cal-icor-hubs/issues/294
+remotes::install_github("hrbrmstr/waffle", lib = "/srv/r") # https://github.com/cal-icor/cal-icor-hubs/issues/294
 #IRkernel::installspec(user = FALSE, prefix='/srv/conda')
-IRkernel::installspec(user = FALSE, prefix=Sys.getenv("CONDA_DIR"))
+#IRkernel::installspec(user = FALSE, prefix=Sys.getenv("CONDA_DIR"))
