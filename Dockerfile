@@ -27,7 +27,31 @@ RUN apt-get -qq update --yes && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
-RUN adduser --disabled-password --gecos "Default Jupyter user" ${NB_USER}
+# leave this commented out - in ubuntu 24.04 base image, the user ubuntu
+# is uid/gid 1000
+# RUN adduser --disabled-password --gecos "Default Jupyter user" ${NB_USER}
+
+# RUN echo "Creating ${NB_USER} user..." \
+#     # Change user name from ubuntu to jovyan
+#     && usermod --login ${NB_USER} ubuntu \
+#     # Change group name from ubuntu to jovyan
+#     && groupmod --new-name ${NB_USER} ubuntu \
+#     # Delete any groups that GID 1000 belongs to other than jovyan
+#     && 
+#     # Set home directory of jovyan user
+#     && usermod --home /home/${NB_USER} --move-home ${NB_USER} \
+#     # Make sure that /srv is owned by non-root user, so we can install things there
+#     && chown -R ${NB_USER}:${NB_USER} /srv
+
+RUN echo "Deleting user/group ubuntu (UID/GID 1000)..." && \
+    (userdel -f ubuntu || true) && \
+    (groupdel ubuntu || true)  && \
+    echo "Creating ${NB_USER} user with UID/GID 1000..." && \
+    adduser --disabled-password --gecos "Default Jupyter user" --uid ${NB_UID} ${NB_USER} && \
+    # Set home directory of jovyan user
+    usermod --home /home/${NB_USER} --move-home ${NB_USER} && \
+    # Make sure that /srv is owned by non-root user, so we can install things there
+    chown -R ${NB_USER}:${NB_USER} /srv
 
 # Do not exclude manpages from being installed.
 RUN sed -i '/usr.share.man/s/^/#/' /etc/dpkg/dpkg.cfg.d/excludes
