@@ -1,5 +1,9 @@
 #!/usr/bin/env Rscript
 
+r = getOption("repos")
+r["CRAN"] = "https://packagemanager.posit.co/cran/__linux__/noble/2025-10-23"
+options(repos = r)
+
 # Function to install R packages
 install_packages_with_versions <- function(packages) {
   available <- available.packages()
@@ -8,7 +12,8 @@ install_packages_with_versions <- function(packages) {
   if (length(to_install) > 0) {
     install.packages(to_install, available = available,
                      versions = packages[to_install],
-                     dependencies = TRUE)
+                     dependencies = TRUE,
+                     lib = Sys.getenv("R_LIBS_USER"))
   } else {
     cat("All packages are already installed.\n")
   }
@@ -20,10 +25,11 @@ required_packages <- c("renv", "remotes", "devtools")
 # Check and install required packages
 new_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]
 if (length(new_packages) > 0) {
-  install.packages(new_packages)
+  install.packages(new_packages, lib = Sys.getenv("R_LIBS_USER"))
 }
 
 packages = list(
+  "pbdZMQ" = "0.3-14", # required for jupyter R kernel
   "IRkernel" = "1.3.2", # required for jupyter R kernel
   "car" = "3.1-3", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "colorspace" = "2.1-2", # https://github.com/cal-icor/csumb-user-image/issues/1
@@ -33,19 +39,20 @@ packages = list(
   "ggalluvial" = "0.12.5", # https://github.com/cal-icor/csumb-user-image/issues/1
   "ggformula" = "0.12.0", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "ggmosaic" = "0.3.3", # https://github.com/cal-icor/csumb-user-image/issues/1
-  "ggrepelel" = "0.9.6", # https://github.com/cal-icor/csumb-user-image/issues/1
+  "ggrepel" = "0.9.6", # https://github.com/cal-icor/csumb-user-image/issues/1
   "ggThemeAssist" = "0.1.5", # https://github.com/cal-icor/cal-icor-hubs/issues/294
   "ggthemes" = "5.1.0", # https://github.com/cal-icor/csumb-user-image/issues/1
   "janitor" = "2.2.1", # https://github.com/cal-icor/csumb-user-image/issues/1
   "knitr" = "1.50", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "Lock5Data" = "3.0.0", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "lubridate" = "1.9.4", # https://github.com/cal-icor/cal-icor-hubs/issues/294
-  "mapgl" = "0.2.0",
+  "mapgl" = "0.4.1",
   "minioclient" = "0.0.6",
   "mosaic" = "1.9.1", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "naniar" = "1.1.0", # https://github.com/cal-icor/csumb-user-image/issues/1
   "openintro" = "2.5.0", # https://github.com/cal-icor/csumb-user-image/issues/1
   "pwr" = "1.3-0", # https://github.com/cal-icor/cal-icor-hubs/issues/163
+  "reticulate" = "1.43.0",
   "RColorBrewer" = "1.1-3", # https://github.com/cal-icor/csumb-user-image/issues/1
   "rmarkdown" = "2.29", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "rstac" = "1.0.1",
@@ -64,4 +71,6 @@ packages = list(
 install_packages_with_versions(packages)
 
 # install GitHub packages
-remotes::install_github("hrbrmstr/waffle") # https://github.com/cal-icor/cal-icor-hubs/issues/294
+remotes::install_github("hrbrmstr/waffle", lib = "/srv/r") # https://github.com/cal-icor/cal-icor-hubs/issues/294
+#IRkernel::installspec(user = FALSE, prefix='/srv/conda')
+#IRkernel::installspec(user = FALSE, prefix=Sys.getenv("CONDA_DIR"))
