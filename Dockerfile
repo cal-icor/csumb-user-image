@@ -182,10 +182,6 @@ RUN git config --system pull.rebase false
 RUN mkdir -p ${CONDA_DIR}/envs/notebook/share/jupyter/lab/settings
 COPY overrides.json ${CONDA_DIR}/envs/notebook/share/jupyter/lab/settings
 
-# create the rstudio prefs for the user
-RUN mkdir -p /home/${NB_USER}/.config/rstudio
-COPY rstudio-prefs.json /home/${NB_USER}/.config/rstudio/rstudio-prefs.json
-
 # code-server's conda package assets are installed in share/code-server.
 ENV VSCODE_EXTENSIONS=${CONDA_DIR}/envs/notebook/share/code-server/extensions
 RUN mkdir -p ${VSCODE_EXTENSIONS}
@@ -210,13 +206,15 @@ COPY --from=srv-r /srv/r /srv/r
 COPY --from=srv-conda /srv/conda /srv/conda
 ENV REPO_DIR=/srv/repo
 
-RUN chown -R ${NB_USER}:${NB_USER} /srv/r /srv/conda
-
 USER ${NB_USER}
 ENV PATH=${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
 
 # Install IR kernelspec. Requires python and R.
 RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
+
+# create the rstudio prefs for the user
+RUN mkdir -p /home/${NB_USER}/.config/rstudio
+COPY --chown=${NB_USER}:${NB_USER} rstudio-prefs.json /home/${NB_USER}/.config/rstudio/rstudio-prefs.json
 
 # clear out /tmp
 USER root
