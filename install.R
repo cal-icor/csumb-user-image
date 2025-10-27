@@ -15,7 +15,7 @@ install_packages_with_versions <- function(packages) {
 }
 
 # List of packages to ensure are installed
-required_packages <- c("remotes", "devtools")
+required_packages <- c("renv", "remotes", "devtools")
 
 # Check and install required packages
 new_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]

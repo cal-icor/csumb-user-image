@@ -50,3 +50,11 @@ libasound2
 
 dnsutils
 net-tools
+
+libgdal-dev
+gdal-bin
+libgeos-dev
+libproj-dev
+libsqlite3-dev
+libssl-dev
+libudunits2-dev
