@@ -13,6 +13,7 @@ ENV NB_UID=1000
 ENV SHELL=/bin/bash
 
 # These are used by the python, R, and final stages
+ENV REPO_DIR=/srv/repo
 ENV CONDA_DIR=/srv/conda
 ENV R_LIBS_USER=/srv/r
 
@@ -119,7 +120,7 @@ RUN curl --silent --location --fail ${SHINY_SERVER_URL} > /tmp/shiny-server.deb 
 RUN echo "TZ=${TZ}" >> /etc/R/Renviron && \ 
     sed -i -e '/^R_LIBS_USER=/s/^/#/' /etc/R/Renviron && \
     echo "R_LIBS_USER=${R_LIBS_USER}" >> /etc/R/Renviron && \
-    echo "CONDA_DIR=${CONDA_DIR}}" >> /etc/R/Renviron
+    echo "CONDA_DIR=${CONDA_DIR}" >> /etc/R/Renviron
 
 # Install our custom Rprofile.site file
 COPY Rprofile.site /usr/lib/R/etc/Rprofile.site
@@ -201,10 +202,8 @@ RUN for x in \
 FROM base AS final
 
 USER root
-RUN R -e "install.packages('IRkernel', repos='https://cran.r-project.org')"
 COPY --from=srv-r /srv/r /srv/r
 COPY --from=srv-conda /srv/conda /srv/conda
-ENV REPO_DIR=/srv/repo
 
 USER ${NB_USER}
 ENV PATH=${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
@@ -212,9 +211,8 @@ ENV PATH=${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-se
 # Install IR kernelspec. Requires python and R.
 RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
 
-# create the rstudio prefs for the user
-RUN mkdir -p /home/${NB_USER}/.config/rstudio
-COPY --chown=${NB_USER}:${NB_USER} rstudio-prefs.json /home/${NB_USER}/.config/rstudio/rstudio-prefs.json
+# copy the repo to /srv/repo
+COPY --chown=${NB_USER}:${NB_USER} . ${REPO_DIR}/
 
 # clear out /tmp
 USER root
