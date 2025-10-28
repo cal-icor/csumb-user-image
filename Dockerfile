@@ -128,7 +128,8 @@ COPY Rprofile.site /usr/lib/R/etc/Rprofile.site
 RUN mkdir /etc/R/Rprofile.site.d
 # RStudio needs its own config
 COPY rsession.conf /etc/rstudio/rsession.conf
-
+# set up basic rstudio user config
+COPY rstudio-prefs.json /etc/rstudio/rstudio-prefs.json
 # Use simpler locking strategy
 COPY file-locks /etc/rstudio/file-locks
 
@@ -180,11 +181,11 @@ RUN git config --system pull.rebase false
 
 # overrides.json is a file that jupyterlab reads to determine some settings
 # 1) remove the 'create shareable link' option from the filebrowser context menu
-RUN mkdir -p ${CONDA_DIR}/envs/notebook/share/jupyter/lab/settings
-COPY overrides.json ${CONDA_DIR}/envs/notebook/share/jupyter/lab/settings
+RUN mkdir -p ${CONDA_DIR}/share/jupyter/lab/settings
+COPY overrides.json ${CONDA_DIR}/share/jupyter/lab/settings
 
 # code-server's conda package assets are installed in share/code-server.
-ENV VSCODE_EXTENSIONS=${CONDA_DIR}/envs/notebook/share/code-server/extensions
+ENV VSCODE_EXTENSIONS=${CONDA_DIR}/share/code-server/extensions
 RUN mkdir -p ${VSCODE_EXTENSIONS}
 
 # This is not reproducible, and it can be difficult to version these.
@@ -204,6 +205,7 @@ FROM base AS final
 USER root
 COPY --from=srv-r /srv/r /srv/r
 COPY --from=srv-conda /srv/conda /srv/conda
+COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
 
 USER ${NB_USER}
 ENV PATH=${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
