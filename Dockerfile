@@ -222,6 +222,9 @@ RUN rm -rf /tmp/*
 # Remove the pip cache created as part of installing mambaforge
 RUN rm -rf /root/.cache
 
+RUN chown ${NB_USER}:${NB_USER} /srv/r
+RUN chown ${NB_USER}:${NB_USER} /srv/conda
+
 USER ${NB_USER}
 WORKDIR /home/${NB_USER}
 
