@@ -224,6 +224,7 @@ RUN rm -rf /root/.cache
 
 RUN chown ${NB_USER}:${NB_USER} /srv/r
 RUN chown ${NB_USER}:${NB_USER} /srv/conda
+RUN chown -R ${NB_USER}:${NB_USER} /srv/shiny-server
 
 USER ${NB_USER}
 WORKDIR /home/${NB_USER}
