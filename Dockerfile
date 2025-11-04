@@ -203,8 +203,8 @@ RUN for x in \
 FROM base AS final
 
 USER root
-COPY --from=srv-r /srv/r /srv/r
-COPY --from=srv-conda /srv/conda /srv/conda
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-r /srv/r /srv/r
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda /srv/conda /srv/conda
 COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
 
 USER ${NB_USER}
@@ -222,9 +222,9 @@ RUN rm -rf /tmp/*
 # Remove the pip cache created as part of installing mambaforge
 RUN rm -rf /root/.cache
 
-RUN chown ${NB_USER}:${NB_USER} /srv/r
-RUN chown ${NB_USER}:${NB_USER} /srv/conda
-RUN chown -R ${NB_USER}:${NB_USER} /srv/shiny-server
+# RUN chown ${NB_USER}:${NB_USER} /srv/r
+# RUN chown ${NB_USER}:${NB_USER} /srv/conda
+# RUN chown -R ${NB_USER}:${NB_USER} /srv/shiny-server
 
 USER ${NB_USER}
 WORKDIR /home/${NB_USER}
