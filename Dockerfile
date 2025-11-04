@@ -213,17 +213,15 @@ ENV PATH=${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-se
 # Install IR kernelspec. Requires python and R.
 RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
 
-# copy the repo to /srv/repo
-COPY --chown=${NB_USER}:${NB_USER} . ${REPO_DIR}/
-
 # clear out /tmp
 USER root
 RUN rm -rf /tmp/*
 # Remove the pip cache created as part of installing mambaforge
 RUN rm -rf /root/.cache
 
-# RUN chown ${NB_USER}:${NB_USER} /srv/r
-# RUN chown ${NB_USER}:${NB_USER} /srv/conda
+# copy the repo to /srv/repo
+COPY . ${REPO_DIR}/
+
 # RUN chown -R ${NB_USER}:${NB_USER} /srv/shiny-server
 
 USER ${NB_USER}
