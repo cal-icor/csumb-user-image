@@ -85,6 +85,7 @@ dependencies:
 
   # pip installed packages, conda is preferred
   - pip:
+    - jupyterlab-a11y-checker==0.2.5
     # useful for debugging python package issues
     - pip-tree==4.0.0
     - pipdeptree==2.28.0
