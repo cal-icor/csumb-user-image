@@ -9,16 +9,16 @@ dependencies:
   - gh-scoped-creds==4.1
   - git  #==2.51.0
   - jupyter-resource-usage=1.1.0
-  - jupyterhub==5.3.0
-  - jupyterlab==4.4.9
+  - jupyterhub==5.4.1
+  - jupyterlab==4.4.10
   - jupyter-archive==3.4.0
   - jupyter_server==2.16.0
   - jupyterlab-git==0.51.2
   - jupyterlab_rise==0.43.1
   - jupytext==1.16.6
   - nbgitpuller==1.2.2
-  - notebook==7.4.5
-  - python==3.11.*
+  - notebook==7.4.7
+  - python==3.12.*
   - pip==25.1.1
 
   # r2d installs jupyter-rsession-proxy, but in the base python env, not in the updated one
@@ -65,7 +65,7 @@ dependencies:
   # - r-waffle
 
   # vscode
-  - code-server==4.104.2
+  - code-server==4.105.1
   - jupyter-vscode-proxy==0.6
   - jupyter-server-proxy==4.4.0
 
