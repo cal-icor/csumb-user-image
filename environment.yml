@@ -43,6 +43,9 @@ dependencies:
   - statsmodels==0.14.4
   - sympy==1.14.0
 
+  # database tooling
+  - jupysql==0.11.1
+
   # pip installed packages, conda is preferred
   - pip:
     - jupyterlab-a11y-checker==0.2.5
@@ -52,6 +55,5 @@ dependencies:
 
     # r2d installs jupyter-shiny-proxy, but in the base python env, not in the updated one
     - jupyter-shiny-proxy==1.3
-    - jupysql==0.10.15
     - nbconvert[webpdf]==7.16.6
     - otter-grader==6.1.3
