@@ -21,6 +21,7 @@ dependencies:
   - notebook==7.5.0
   - python==3.11.*
   - pip==25.1.1
+  - regex==2025.11.3
   - sqlite==3.51.1
 
   # r2d installs jupyter-rsession-proxy, but in the base python env, not in the updated one
