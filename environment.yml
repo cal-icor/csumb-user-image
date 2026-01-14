@@ -11,7 +11,7 @@ dependencies:
   - ipython==9.7.0
   - jupyter-resource-usage=1.2.0
   - jupyterhub==5.4.3
-  - jupyterlab==4.5.1
+  - jupyterlab==4.5.2
   - jupyter-archive==3.4.0
   - jupyter_server==2.17.0
   - jupyterlab-git==0.51.2
