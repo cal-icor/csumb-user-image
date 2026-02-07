@@ -18,6 +18,7 @@ micro
 tini
 locales
 nano
+file
 
 # for ops debugging
 net-tools
