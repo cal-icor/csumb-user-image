@@ -10,32 +10,6 @@ on:
       - '.github/**'
       - 'images/**'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
   test-build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    env:
-      DOCKER_CONFIG: $HOME/.docker
-    steps:
-      - name: Checkout files in repo
-        uses: actions/checkout@v4
-
-      - name: Cleanup disk space
-        run: |
-          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
-          df -h
-
-      - name: Build and test the image if any image file(s) changed
-        uses: jupyterhub/repo2docker-action@master
-        with:
-          FORCE_REPO2DOCKER_VERSION: jupyter-repo2docker==2025.08.0
-          REPO_DIR: /srv/repo
-          NO_PUSH: true
-
-      # Lets us monitor disks getting full as images get bigger over time
-      - name: Show how much disk space is left
-        run: df -h
+    uses: cal-icor/shared-workflows/.github/workflows/build-test-image.yaml@main

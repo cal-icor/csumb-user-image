@@ -12,128 +12,19 @@ on:
       - '.github/**'
       - 'images/**'
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    env:
-      DOCKER_CONFIG: $HOME/.docker
-      IMAGE: ${{ vars.IMAGE }}
-      GOOGLE_ARTIFACT_REGISTRY: ${{ vars.GOOGLE_ARTIFACT_REGISTRY }}
-    outputs:
-      image-tag: ${{ steps.build-and-push.outputs.IMAGE_SHA_TAG }}
-
-    steps:
-      - name: Check out the image repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
-
-      - name: Cleanup disk space
-        run: |
-          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc
-          df -h
-
-      - name: Log in to GAR
-        uses: docker/login-action@v3
-        with:
-          registry: us-central1-docker.pkg.dev
-          username: _json_key
-          password: ${{ secrets.GAR_SECRET_KEY }}
-
-      - name: Build the image and push to artifact registry
-        id: build-and-push
-        uses: jupyterhub/repo2docker-action@master
-        with:
-          FORCE_REPO2DOCKER_VERSION: jupyter-repo2docker==2025.08.0
-          DOCKER_REGISTRY: ${{ env.GOOGLE_ARTIFACT_REGISTRY }}
-          IMAGE_NAME: ${{ env.IMAGE }}
-          # Disable pushing a 'latest' tag, as this often just causes confusion
-          LATEST_TAG_OFF: true
-          # Put repo contents in /srv/repo, rather than the default (/home/jovyan). The home directory
-          # is mounted over by persistent storage when we are using the built image in a JupyterHub, and
-          # so all contents put in /home/jovyan are lost. This particularly prevents any 'start' script from
-          # working, as it is needed in runtime.
-          REPO_DIR: /srv/repo
-
-      # Lets us monitor disks getting full as images get bigger over time
-      - name: Show how much disk space is left
-        run: df -h
-
-  update-deployment-image-tag:
-    runs-on: ubuntu-latest
-    needs: build-and-push
+  build-push-open-pr:
     permissions:
       contents: write
       pull-requests: write
       repository-projects: write
-    env:
-      HUB: ${{ vars.HUB }}
-      IMAGE: ${{ vars.IMAGE }}
-      IMAGE_TAG: ${{ needs.build-and-push.outputs.image-tag }}
-    # only run this job if the image was built and pushed successfully.
-    # repo2docker-action emits the image-tag as an output
-    if: ${{ needs.build-and-push.outputs.image-tag }}
-
-    steps:
-      - name: Checkout the jupyterhub repo
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.IMAGE_BUILDER_CREATE_PR }}
-          fetch-depth: 0
-          repository: 'cal-icor/cal-icor-hubs'
-          sparse-checkout: |
-            deployments/
-  
-      - name: Set git identity
-        run: |
-          git config --global user.email "${{ vars.IMAGE_BUILDER_BOT_EMAIL }}"
-          git config --global user.name "${{ vars.IMAGE_BUILDER_BOT_NAME }}"
-
-      - name: Update the tag for any deployments that use this image
-        run: |
-          for deployment in $(find deployments -type f -name common.yaml -exec grep -lr "${IMAGE}" {} +); do
-            old_hash=$(grep -hA1 ${IMAGE} ${deployment} | grep tag: | awk '{print$2}')
-            new_hash=${IMAGE_TAG}
-            sed -i -e "s,${old_hash},${new_hash},g" ${deployment}
-            echo "Updated ${deployment} with new image tag ${new_hash}"
-          done
-
-      - name: Check if any files were changed, create feature branch, add, commit, push changes and open a pull request
-        env:
-          GH_TOKEN: ${{ secrets.IMAGE_BUILDER_CREATE_PR }}
-        run: |
-          git status --porcelain -uno | awk '{print $2}' > ${HOME}/CHANGED_FILES
-          if [ ! -s ${HOME}/CHANGED_FILES ]; then
-            echo "No files changed, skipping PR creation."
-            exit 0
-          fi
-
-          CHANGED_FILES=$(cat ${HOME}/CHANGED_FILES)
-          echo "Files changed: ${CHANGED_FILES}"
-          git diff
-          git checkout -b update-${HUB}-image-tag-${IMAGE_TAG}
-          # to be safe, only add files that have changed
-          for file in $(echo -e ${CHANGED_FILES}); do
-            git add ${file}
-          done
-
-          BRANCH="update-${HUB}-image-tag-${IMAGE_TAG}"
-          MESSAGE="update ${HUB} image tag to ${IMAGE_TAG}"
-          git commit -m "${MESSAGE}"
-          git push origin ${BRANCH}
-          #
-          # now create a PR!
-          #
-          cat << EOF > ${HOME}/pr-body.txt
-          ${MESSAGE}
-
-          ${CHANGED_FILES}
-          EOF
-          BODY=$(cat ${HOME}/pr-body.txt)
-          gh pr new -t "${MESSAGE}" -b "${BODY}" -H${BRANCH} -Bstaging
-
+    uses: cal-icor/shared-workflows/.github/workflows/build-push-create-pr.yaml@main
+    with:
+      image: ${{ vars.IMAGE}}
+      hub: ${{ vars.HUB }}
+      app_id: ${{ vars.APP_ID }}
+      image_builder_bot_name: ${{ vars.IMAGE_BUILDER_BOT_NAME }}
+      image_builder_bot_email: ${{ vars.IMAGE_BUILDER_BOT_EMAIL }}
+    secrets:
+      GAR_SECRET_KEY: ${{ secrets.GAR_SECRET_KEY }}
+      IMAGE_BUILDER_CREATE_PR: ${{ secrets.IMAGE_BUILDER_CREATE_PR }}
