@@ -16,6 +16,7 @@ ENV SHELL=/bin/bash
 ENV REPO_DIR=/srv/repo
 ENV CONDA_DIR=/srv/conda
 ENV R_LIBS_USER=/srv/r
+ENV OBITOOLS_DIR=/srv/obitools
 
 # capture default path so we can set the path succinctly later
 ENV DEFAULT_PATH=${PATH}
@@ -158,6 +159,7 @@ FROM base AS srv-conda
 # Create user owned conda dir
 # This lets users temporarily install packages
 RUN install -d -o ${NB_USER} -g ${NB_USER} ${CONDA_DIR}
+RUN install -d -o ${NB_USER} -g ${NB_USER} ${OBITOOLS_DIR}
 
 # Install conda environment as our user
 USER ${NB_USER}
@@ -176,6 +178,15 @@ RUN mamba clean -afy
 COPY bioinformatics.yaml /tmp/bioinformatics.yaml
 COPY bioinformatics-install.sh /tmp/bioinformatics-install.sh
 RUN /tmp/bioinformatics-install.sh
+
+# install molecularecology packages
+COPY molecularecology.yaml /tmp/molecularecology.yaml
+COPY molecularecology-install.sh /tmp/molecularecology-install.sh
+RUN /tmp/molecularecology-install.sh
+
+USER root
+RUN curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/install_obitools.sh | bash -s -- --install-dir ${OBITOOLS_DIR}
+USER ${NB_USER}
 
 # installing chromium browser to enable webpdf conversion using nbconvert
 ENV PLAYWRIGHT_BROWSERS_PATH=${CONDA_DIR}
@@ -210,10 +221,11 @@ FROM base AS final
 USER root
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-r /srv/r /srv/r
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda /srv/conda /srv/conda
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda /srv/obitools /srv/obitools
 COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
 
 USER ${NB_USER}
-ENV PATH=${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
+ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
 
 # Install IR kernelspec. Requires python and R.
 RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
