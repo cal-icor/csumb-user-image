@@ -9,4 +9,4 @@ dependencies:
   - python==3.*
 
   - qiime2==2024.10.1
-#  - obitools #==1.2.13
+  - setuptools==70.0.0
