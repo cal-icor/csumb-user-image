@@ -1,0 +1,12 @@
+name: bioconda-csumb-user-image
+# This is the standard conda configuration file. Use this file to list
+# the conda packages that you need installed in your environment.
+channels:
+  - bioconda
+  - qiime2
+
+dependencies:
+  - python==3.*
+
+  - qiime2==2024.10.1
+  - setuptools==70.0.0
