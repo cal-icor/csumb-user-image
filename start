@@ -1,6 +1,14 @@
 #!/bin/bash
 
+# requied when exporting pdfs
 # See https://jira-secure.berkeley.edu/browse/DH-305
 export PLAYWRIGHT_BROWSERS_PATH=${CONDA_DIR}
+
+# Set RStudio config directory to a location in the repository so that it can
+# be persisted across container restarts
 export XDG_CONFIG_HOME=${REPO_DIR}/rstudio-config
+
+# Set vscode proxy URI template
+export VSCODE_PROXY_URI="../proxy/absolute/{{port}}/"
+
 exec "$@"
