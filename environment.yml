@@ -32,6 +32,7 @@ dependencies:
   - jupyter-server-proxy==4.4.0
 
   # data science
+  - csvkit==2.2.0
   - datascience==0.18.1
   - matplotlib==3.10.3
   - numpy==2.3.5
@@ -48,6 +49,7 @@ dependencies:
   - statsmodels==0.14.4
   - sympy==1.14.0
   - tensorflow==2.19.1
+  - uplot-python==1.0.0
 
   # database tooling
   - jupysql==0.11.1
