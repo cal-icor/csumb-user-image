@@ -29,6 +29,8 @@ if (length(new_packages) > 0) {
 }
 
 packages = list(
+  "BSDA" = "1.2.2", # https://github.com/cal-icor/csumb-user-image/issues/70
+  "DescTools" = "0.99.60", # https://github.com/cal-icor/csumb-user-image/issues/70
   "GGally" = "2.4.0", # https://github.com/cal-icor/csumb-user-image/issues/25
   "IRkernel" = "1.3.2", # required for jupyter R kernel
   "Lock5Data" = "3.0.0", # https://github.com/cal-icor/cal-icor-hubs/issues/163
