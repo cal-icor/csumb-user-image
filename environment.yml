@@ -58,8 +58,7 @@ dependencies:
 
   # pip installed packages, conda is preferred
   - pip:
-    # nbgitpuller beta
-    - nbgitpuller==1.3.0b1
+    - nbgitpuller==1.3.0
 
     - jupyterlab-a11y-checker==0.2.5
     # useful for debugging python package issues
