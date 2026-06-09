@@ -185,7 +185,10 @@ COPY molecularecology-install.sh /tmp/molecularecology-install.sh
 RUN /tmp/molecularecology-install.sh
 
 USER root
-RUN curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/install_obitools.sh | bash -s -- --install-dir ${OBITOOLS_DIR}
+# conda's GCC is on PATH and uses its own sysroot, so it won't find /usr/include/zlib.h.
+# Explicitly point CGo at conda's own zlib headers (installed by the conda zlib package).
+RUN export CGO_CFLAGS="-I${CONDA_DIR}/include" && \
+    curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/install_obitools.sh | bash -s -- --install-dir ${OBITOOLS_DIR}
 USER ${NB_USER}
 
 # installing chromium browser to enable webpdf conversion using nbconvert
