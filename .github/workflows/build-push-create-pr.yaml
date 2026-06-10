@@ -18,7 +18,7 @@ jobs:
       contents: write
       pull-requests: write
       repository-projects: write
-    uses: cal-icor/shared-workflows/.github/workflows/build-push-create-pr.yaml@0.2.1
+    uses: cal-icor/shared-workflows/.github/workflows/build-push-create-pr.yaml@0.3.0
     with:
       image: ${{ vars.IMAGE}}
       hub: ${{ vars.HUB }}
@@ -27,4 +27,5 @@ jobs:
       image_builder_bot_email: ${{ vars.IMAGE_BUILDER_BOT_EMAIL }}
     secrets:
       GAR_SECRET_KEY: ${{ secrets.GAR_SECRET_KEY }}
+      PRIVATE_KEY_SECRET: ${{ secrets.PRIVATE_KEY_SECRET }}
       IMAGE_BUILDER_CREATE_PR: ${{ secrets.IMAGE_BUILDER_CREATE_PR }}
