@@ -95,6 +95,3 @@ man
 # Unknown requirement. Perhaps remove this and the R magick package during a
 # maintenance period.
 libmagick++-dev
-
-# for obitools4
-zlib1g-dev
