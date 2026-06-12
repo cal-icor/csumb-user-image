@@ -11,6 +11,8 @@ on:
       - 'LICENSE'
       - '.github/**'
       - 'images/**'
+      - 'image-tests/**'
+      - 'browser-tests/**'
 
 jobs:
   build-push-open-pr:
@@ -18,7 +20,7 @@ jobs:
       contents: write
       pull-requests: write
       repository-projects: write
-    uses: cal-icor/shared-workflows/.github/workflows/build-push-create-pr.yaml@0.3.0
+    uses: cal-icor/shared-workflows/.github/workflows/build-push-create-pr.yaml@0.4.0
     with:
       image: ${{ vars.IMAGE}}
       hub: ${{ vars.HUB }}
