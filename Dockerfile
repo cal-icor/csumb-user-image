@@ -174,6 +174,9 @@ COPY environment.yml /tmp/environment.yml
 RUN mamba env update -q -p ${CONDA_DIR} -f /tmp/environment.yml
 RUN mamba clean -afy
 
+# Register the SageMath Jupyter kernel so it appears in the launcher
+RUN sage -python -m sage.repl.ipython_kernel.install --sys-prefix
+
 # install bioconda packages
 COPY bioinformatics.yaml /tmp/bioinformatics.yaml
 COPY bioinformatics-install.sh /tmp/bioinformatics-install.sh
