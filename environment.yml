@@ -8,7 +8,7 @@ dependencies:
   # Items required for basic level functionality
   - gh-scoped-creds==4.1
   - git #==2.51.1
-  - ipython==9.7.0
+  - ipython==8.37.0
   - jupyter-resource-usage=1.2.0
   - jupyterhub==5.4.4
   - jupyterlab==4.5.7
@@ -30,6 +30,9 @@ dependencies:
   - code-server==4.106.2
   - jupyter-vscode-proxy==0.7
   - jupyter-server-proxy==4.4.0
+
+  # sagemath (library only -- no rpy2/r-base, so no conda R PATH conflict)
+  - sagelib==10.7
 
   # data science
   - csvkit==2.2.0
