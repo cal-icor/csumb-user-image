@@ -6,6 +6,9 @@ channels:
 
 dependencies:
   # Items required for basic level functionality
+  # pinned so the conda solver satisfies cyclopts's attrs>=23.1.0 (pip) requirement;
+  # also squelches the attrs version warning emitted when running the notebook tests
+  - attrs==26.1.0
   - gh-scoped-creds==4.1
   - git #==2.51.1
   - ipython==8.37.0
