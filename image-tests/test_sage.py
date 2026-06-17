@@ -29,4 +29,4 @@ def run_notebook(notebook, kernel_name="python3"):
 
 
 def test_sage_examples_notebook_execution():
-    assert run_notebook("sage-examples.ipynb", kernel_name="sagemath")
+    assert run_notebook("sage-notebook-test.ipynb", kernel_name="sagemath")
