@@ -10,7 +10,7 @@ dependencies:
   # also squelches the attrs version warning emitted when running the notebook tests
   - attrs==26.1.0
   - gh-scoped-creds==4.1
-  - git #==2.54.0
+  - git==2.54.0
   - ipython==9.14.1
   - jupyter-resource-usage=1.2.1
   - jupyterhub==5.5.0
