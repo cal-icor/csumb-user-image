@@ -4,4 +4,4 @@ on:
 
 jobs:
   lint:
-    uses: cal-icor/shared-workflows/.github/workflows/yaml-lint.yaml@0.4.0
+    uses: cal-icor/shared-workflows/.github/workflows/yaml-lint.yaml@0.4.3
