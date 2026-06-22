@@ -7,5 +7,5 @@
     "default_project_location": "~",
     "restore_last_project": false,
     "auto_save_idle_ms": 500,
-    "copilot-enabled": 1
+    "copilot-enabled": 0
 }
