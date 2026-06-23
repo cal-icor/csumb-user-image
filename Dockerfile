@@ -1,6 +1,7 @@
 FROM us-central1-docker.pkg.dev/cal-icor-hubs/user-images/base-user-image:HASH AS base
 
 USER root
+ENV OBITOOLS_DIR=/srv/obitools
 
 # Do not exclude manpages from being installed.
 RUN sed -i '/usr.share.man/s/^/#/' /etc/dpkg/dpkg.cfg.d/excludes
@@ -90,7 +91,7 @@ COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda /srv/obitools /srv/obitools
 COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
 
 USER ${NB_USER}
-ENV PATH=${CONDA_DIR}/envs/notebook/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
+ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/envs/notebook/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
 
 # Install IR kernelspec. Requires python and R.
 RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}/envs/notebook')"
