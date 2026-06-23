@@ -29,6 +29,8 @@ if (length(new_packages) > 0) {
 }
 
 packages = list(
+  "BSDA" = "1.2.2", # https://github.com/cal-icor/csumb-user-image/issues/70
+  "DescTools" = "0.99.60" # https://github.com/cal-icor/csumb-user-image/issues/70
 )
 
 install_packages_with_versions(packages)
