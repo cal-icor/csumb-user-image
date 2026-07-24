@@ -1,7 +1,0 @@
-name: "Yaml lint"
-on:
-  - pull_request  # yamllint disable-line rule:truthy
-
-jobs:
-  lint:
-    uses: cal-icor/shared-workflows/.github/workflows/yaml-lint.yaml@0.4.3
