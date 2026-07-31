@@ -232,6 +232,10 @@ COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda /srv/obitools /srv/obitools
 COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
 
 USER ${NB_USER}
+# set the pip cache dir to something reasonable
+ENV PIP_CACHE_DIR=${CONDA_DIR}/envs/notebook/pip_cache
+RUN mkdir -p ${PIP_CACHE_DIR}
+
 ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
 
 # Install IR kernelspec. Requires python and R.
