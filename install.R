@@ -37,8 +37,10 @@ packages = list(
   "RColorBrewer" = "1.1-3", # https://github.com/cal-icor/csumb-user-image/issues/1
   "car" = "3.1-3", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "colorspace" = "2.1-2", # https://github.com/cal-icor/csumb-user-image/issues/1
+  "datasauRus" = "0.1.9", # https://github.com/cal-icor/csumb-user-image/issues/104
   "esquisse" = "2.1.0", # https://github.com/cal-icor/cal-icor-hubs/issues/294
   "extrafont" = "0.20", # https://github.com/cal-icor/csumb-user-image/issues/25
+  "fivethiryeight" = "0.6.2", # https://github.com/cal-icor/csumb-user-image/issues/104
   "flexdashboard" = "0.6.2", # https://github.com/cal-icor/csumb-user-image/issues/25
   "forcats" = "1.0.0", # https://github.com/cal-icor/cal-icor-hubs/issues/294
   "forecast" = "8.24.0", # https://github.com/cal-icor/csumb-user-image/issues/25
@@ -58,6 +60,7 @@ packages = list(
   "ggtext" = "0.1.2", # https://github.com/cal-icor/csumb-user-image/issues/25
   "ggThemeAssist" = "0.1.5", # https://github.com/cal-icor/cal-icor-hubs/issues/294
   "ggthemes" = "5.1.0", # https://github.com/cal-icor/csumb-user-image/issues/1
+  "ggwordcloud" = "0.6.2", # https://github.com/cal-icor/csumb-user-image/issues/104
   "gridExtra" = "2.3", # https://github.com/cal-icor/csumb-user-image/issues/25
   "gtsummary" = "2.5.0", # https://github.com/cal-icor/base-user-image/issues/112
   "janitor" = "2.2.1", # https://github.com/cal-icor/csumb-user-image/issues/1
@@ -94,7 +97,9 @@ packages = list(
   "tidyr" = "1.3.1", # https://github.com/cal-icor/cal-icor-hubs/issues/294
   "tidyverse" = "2.0.0",
   "timetk" = "2.9.1", # https://github.com/cal-icor/csumb-user-image/issues/25
-  "viridis" = "0.6.5" # https://github.com/cal-icor/csumb-user-image/issues/1
+  "unvotes" = "0.3.0", # https://github.com/cal-icor/csumb-user-image/issues/104
+  "viridis" = "0.6.5", # https://github.com/cal-icor/csumb-user-image/issues/1
+  "zipcodeR" = "0.3.5" # https://github.com/cal-icor/csumb-user-image/issues/104
 
   # Ensure that every entry have a comma, except the last one.
 )
