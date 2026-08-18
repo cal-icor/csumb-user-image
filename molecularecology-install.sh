@@ -3,7 +3,11 @@
 set -euo pipefail
 
 # mamba env create -q -n molecularecology -f /tmp/molecularecology.yaml
+ENV_DEF="https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2026.4/qiime2/released/rachis-qiime2-linux-64-conda.yml"
+curl --silent --location --fail ${ENV_DEF} > /tmp/$(basename ${ENV_DEF})
+ENV_FILE="/tmp/$(basename ${ENV_DEF})"
+sed -i '1iname: molecularecology' ${ENV_FILE}
 mamba env create \
-  --name molecularecology \
-  --file https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2026.4/qiime2/released/rachis-qiime2-linux-64-conda.yml
+  --file ${ENV_FILE} \
+  --prefix ${MOLECULARECOLOGY_DIR}
 mamba clean -afy
