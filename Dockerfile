@@ -16,9 +16,6 @@ ENV SHELL=/bin/bash
 ENV REPO_DIR=/srv/repo
 ENV CONDA_DIR=/srv/conda
 ENV R_LIBS_USER=/srv/r
-#ENV BIOINFORMATICS_DIR=/srv/bioinformatics
-ENV BIOINFORMATICS_DIR=/srv/conda/envs/bioinformatics
-ENV MOLECULARECOLOGY_DIR=/srv/conda/envs/molecularecology
 ENV OBITOOLS_DIR=/srv/obitools
 
 # capture default path so we can set the path succinctly later
@@ -191,6 +188,7 @@ RUN mamba env update -q -p ${CONDA_DIR} -f /tmp/environment.yml
 # env python directly to install the kernelspec.
 RUN python -m sage.repl.ipython_kernel.install --sys-prefix
 
+# install molecularecology packages
 COPY bioinformatics.yaml /tmp/bioinformatics.yaml
 COPY bioinformatics-install.sh /tmp/bioinformatics-install.sh
 RUN /tmp/bioinformatics-install.sh
@@ -203,37 +201,9 @@ RUN /tmp/molecularecology-install.sh
 RUN mamba clean -afy
 
 
-# # =============================================================================
-# # This stage exists to build /srv/bioinformatics.
-# FROM base AS bioinformatics
-
-# USER root
-# RUN install -d -o ${NB_USER} -g ${NB_USER} ${BIOINFORMATICS_DIR}
-
-# # install bioconda packages
-# ENV PATH=${CONDA_DIR}/bin:$PATH
-# COPY bioinformatics.yaml /tmp/bioinformatics.yaml
-# COPY bioinformatics-install.sh /tmp/bioinformatics-install.sh
-# RUN /tmp/bioinformatics-install.sh
-
-
-# =============================================================================
-# This stage exists to build /srv/molecularecology.
-# FROM base AS molecularecology
-
-# USER root
-# RUN install -d -o ${NB_USER} -g ${NB_USER} ${MOLECULARECOLOGY_DIR}
-
-# # install molecularecology packages
-# ENV PATH=${CONDA_DIR}/bin:$PATH
-# COPY molecularecology.yaml /tmp/molecularecology.yaml
-# COPY molecularecology-install.sh /tmp/molecularecology-install.sh
-# RUN /tmp/molecularecology-install.sh
-
-
 # =============================================================================
 # This stage exists to build obitools
-FROM base AS obitools
+FROM base AS srv-obitools
 
 USER root
 # conda's GCC is on PATH and uses its own sysroot, so it won't find /usr/include/zlib.h.
@@ -246,17 +216,11 @@ RUN curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/ins
 FROM base AS final
 
 USER root
-# COPY --chown=${NB_USER}:${NB_USER} --from=bioinformatics ${BIOINFORMATICS_DIR} ${BIOINFORMATICS_DIR}
-# COPY --chown=${NB_USER}:${NB_USER} --from=molecularecology ${MOLECULARECOLOGY_DIR} ${MOLECULARECOLOGY_DIR}
-COPY --chown=${NB_USER}:${NB_USER} --from=obitools ${OBITOOLS_DIR} ${OBITOOLS_DIR}
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-obitools ${OBITOOLS_DIR} ${OBITOOLS_DIR}
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda ${CONDA_DIR} ${CONDA_DIR}
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-r ${R_LIBS_USER} ${R_LIBS_USER}
 COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
 COPY --chown=${NB_USER}:${NB_USER} . ${REPO_DIR}/
-
-# Set up symlinks to the conda environments so they can be activated by name
-# RUN ln -s ${MOLECULARECOLOGY_DIR} ${CONDA_DIR}/envs/molecularecology
-# RUN ln -s ${BIOINFORMATICS_DIR} ${CONDA_DIR}/envs/bioinformatics
 
 ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
 

@@ -8,5 +8,4 @@ ENV_FILE="/tmp/$(basename ${ENV_DEF})"
 sed -i '1iname: molecularecology' ${ENV_FILE}
 mamba env create \
   --file ${ENV_FILE} \
-  --prefix ${MOLECULARECOLOGY_DIR}
 mamba clean -afy
