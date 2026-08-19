@@ -29,38 +29,40 @@ RUN apt-get -qq update --yes && \
     echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
-# leave this commented out - in ubuntu 24.04 base image, the user ubuntu
-# is uid/gid 1000
-# RUN adduser --disabled-password --gecos "Default Jupyter user" ${NB_USER}
+# Set up user
+ENV USER=${NB_USER} \
+    HOME=/home/${NB_USER}
 
-# RUN echo "Creating ${NB_USER} user..." \
-#     # Change user name from ubuntu to jovyan
-#     && usermod --login ${NB_USER} ubuntu \
-#     # Change group name from ubuntu to jovyan
-#     && groupmod --new-name ${NB_USER} ubuntu \
-#     # Delete any groups that GID 1000 belongs to other than jovyan
-#     && 
-#     # Set home directory of jovyan user
-#     && usermod --home /home/${NB_USER} --move-home ${NB_USER} \
-#     # Make sure that /srv is owned by non-root user, so we can install things there
-#     && chown -R ${NB_USER}:${NB_USER} /srv
-
-RUN echo "Deleting user/group ubuntu (UID/GID 1000)..." && \
-    (userdel -f ubuntu || true) && \
-    (groupdel ubuntu || true)  && \
-    echo "Creating ${NB_USER} user with UID/GID 1000..." && \
-    adduser --disabled-password --gecos "Default Jupyter user" --uid ${NB_UID} ${NB_USER} && \
-    # Set home directory of jovyan user
-    usermod --home /home/${NB_USER} --move-home ${NB_USER} && \
-    # Make sure that /srv is owned by non-root user, so we can install things there
-    chown -R ${NB_USER}:${NB_USER} /srv
-
+# Ubuntu 24.04 has a predefined uid/gid 1000, older Ubuntu versions don't
+RUN if getent group ${NB_UID}; then \
+      GROUP_1000="$(getent group ${NB_UID} | cut -d: -f1)"; \
+      if [ "$GROUP_1000" != "$NB_USER" ]; then \
+        groupmod --new-name ${NB_USER} "$GROUP_1000"; \
+      fi; \
+    else \
+      groupadd --gid ${NB_UID} ${NB_USER}; \
+    fi
+RUN if id ${NB_UID}; then \
+      USER_1000="$(id ${NB_UID} -un)"; \
+      if [ "$USER_1000" != "$NB_USER" ]; then \
+        usermod --home "/home/$NB_USER" --login "$NB_USER" --move-home "$USER_1000"; \
+      fi; \
+    else \
+      useradd \
+        --comment "Default user" \
+        --create-home \
+        --gid ${NB_UID} \
+        --no-log-init \
+        --shell /bin/bash \
+        --uid ${NB_UID} \
+        ${NB_USER}; \
+    fi
 # Do not exclude manpages from being installed.
 RUN sed -i '/usr.share.man/s/^/#/' /etc/dpkg/dpkg.cfg.d/excludes
 
 # Reinstall coreutils so that basic man pages are installed. Due to dpkg's
 # exclusion, they were not originally installed.
-RUN apt --reinstall install coreutils
+RUN apt --reinstall -qq install coreutils
 
 # Install all apt packages
 COPY apt.txt /tmp/apt.txt
@@ -134,6 +136,18 @@ COPY rstudio-prefs.json /etc/rstudio/rstudio-prefs.json
 # Use simpler locking strategy
 COPY file-locks /etc/rstudio/file-locks
 
+USER root
+# Create user owned conda dir
+# This lets users temporarily install packages
+RUN install -d -o ${NB_USER} -g ${NB_USER} ${CONDA_DIR}
+
+# Install conda environment as our user
+USER ${NB_USER}
+
+# Install conda
+COPY --chown=${NB_USER}:${NB_USER} install-miniforge.bash /tmp/install-miniforge.bash
+RUN /tmp/install-miniforge.bash
+
 
 # =============================================================================
 # This stage exists to build /srv/r.
@@ -151,52 +165,42 @@ USER ${NB_USER}
 COPY install.R /tmp/
 RUN /tmp/install.R
 
+
 # =============================================================================
 # This stage exists to build /srv/conda.
 FROM base AS srv-conda
 
-# USER root
+USER root
 # Create user owned conda dir
 # This lets users temporarily install packages
 RUN install -d -o ${NB_USER} -g ${NB_USER} ${CONDA_DIR}
-RUN install -d -o ${NB_USER} -g ${NB_USER} ${OBITOOLS_DIR}
 
 # Install conda environment as our user
 USER ${NB_USER}
-
-# Install conda 
-COPY --chown=${NB_USER}:${NB_USER} install-miniforge.bash /tmp/install-miniforge.bash
-RUN /tmp/install-miniforge.bash
 
 # Install Conda packages
 ENV PATH=${CONDA_DIR}/bin:$PATH
 COPY environment.yml /tmp/environment.yml
 RUN mamba env update -q -p ${CONDA_DIR} -f /tmp/environment.yml
-RUN mamba clean -afy
 
 # Register the SageMath Jupyter kernel so it appears in the launcher.
 # The conda-forge sagelib `sage` wrapper does not accept `-python`; invoke the
 # env python directly to install the kernelspec.
 RUN python -m sage.repl.ipython_kernel.install --sys-prefix
 
-# install bioconda packages
+# install molecularecology packages
 COPY bioinformatics.yaml /tmp/bioinformatics.yaml
 COPY bioinformatics-install.sh /tmp/bioinformatics-install.sh
 RUN /tmp/bioinformatics-install.sh
 
 # install molecularecology packages
-COPY molecularecology.yaml /tmp/molecularecology.yaml
+ENV PATH=${CONDA_DIR}/bin:$PATH
 COPY molecularecology-install.sh /tmp/molecularecology-install.sh
 RUN /tmp/molecularecology-install.sh
 
-USER root
-# conda's GCC is on PATH and uses its own sysroot, so it won't find /usr/include/zlib.h.
-# Explicitly point CGo at conda's own zlib headers (installed by the conda zlib package).
-RUN curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/install_obitools.sh | bash -s -- --install-dir ${OBITOOLS_DIR}
-USER ${NB_USER}
+RUN mamba clean -afy
 
 # installing chromium browser to enable webpdf conversion using nbconvert
-ENV PLAYWRIGHT_BROWSERS_PATH=${CONDA_DIR}
 RUN playwright install chromium
 
 # https://github.com/berkeley-dsep-infra/datahub/issues/5827
@@ -221,38 +225,43 @@ RUN for x in \
   reditorsupport.r \
   ; do code-server --extensions-dir ${VSCODE_EXTENSIONS} --install-extension $x; done
 
-# =============================================================================
-# This stage consumes base and import /srv/r and /srv/conda.
-FROM base AS final
-
-USER root
-COPY --chown=${NB_USER}:${NB_USER} --from=srv-r /srv/r /srv/r
-COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda /srv/conda /srv/conda
-COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda /srv/obitools /srv/obitools
-COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
-
-USER ${NB_USER}
 # set the pip cache dir to something reasonable
 ENV PIP_CACHE_DIR=${CONDA_DIR}/envs/notebook/pip_cache
 RUN mkdir -p ${PIP_CACHE_DIR}
 
+
+# =============================================================================
+# This stage exists to build obitools
+FROM base AS srv-obitools
+
+USER root
+# conda's GCC is on PATH and uses its own sysroot, so it won't find /usr/include/zlib.h.
+# Explicitly point CGo at conda's own zlib headers (installed by the conda zlib package).
+RUN curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/install_obitools.sh | bash -s -- --install-dir ${OBITOOLS_DIR}
+
+
+# =============================================================================
+# This stage consumes base and import the previous stages
+FROM base AS final
+
+USER root
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-obitools ${OBITOOLS_DIR} ${OBITOOLS_DIR}
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda ${CONDA_DIR} ${CONDA_DIR}
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-r ${R_LIBS_USER} ${R_LIBS_USER}
+COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
+COPY --chown=${NB_USER}:${NB_USER} . ${REPO_DIR}/
+
+# set the path
 ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
 
-# Install IR kernelspec. Requires python and R.
-RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
-
 # clear out /tmp
-USER root
 RUN rm -rf /tmp/*
 # Remove the pip cache created as part of installing mambaforge
 RUN rm -rf /root/.cache
 
-# copy the repo to /srv/repo
-COPY . ${REPO_DIR}/
-
-# RUN chown -R ${NB_USER}:${NB_USER} /srv/shiny-server
-
 USER ${NB_USER}
+# Install IR kernelspec. Requires python and R.
+RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
 WORKDIR /home/${NB_USER}
 
 EXPOSE 8888
