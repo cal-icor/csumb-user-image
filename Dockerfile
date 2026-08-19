@@ -200,31 +200,6 @@ RUN /tmp/molecularecology-install.sh
 
 RUN mamba clean -afy
 
-
-# =============================================================================
-# This stage exists to build obitools
-FROM base AS srv-obitools
-
-USER root
-# conda's GCC is on PATH and uses its own sysroot, so it won't find /usr/include/zlib.h.
-# Explicitly point CGo at conda's own zlib headers (installed by the conda zlib package).
-RUN curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/install_obitools.sh | bash -s -- --install-dir ${OBITOOLS_DIR}
-
-
-# =============================================================================
-# This stage consumes base and import the previous stages
-FROM base AS final
-
-USER root
-COPY --chown=${NB_USER}:${NB_USER} --from=srv-obitools ${OBITOOLS_DIR} ${OBITOOLS_DIR}
-COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda ${CONDA_DIR} ${CONDA_DIR}
-COPY --chown=${NB_USER}:${NB_USER} --from=srv-r ${R_LIBS_USER} ${R_LIBS_USER}
-COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
-COPY --chown=${NB_USER}:${NB_USER} . ${REPO_DIR}/
-
-ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
-
-USER ${NB_USER}
 # installing chromium browser to enable webpdf conversion using nbconvert
 RUN playwright install chromium
 
@@ -254,16 +229,39 @@ RUN for x in \
 ENV PIP_CACHE_DIR=${CONDA_DIR}/envs/notebook/pip_cache
 RUN mkdir -p ${PIP_CACHE_DIR}
 
-# Install IR kernelspec. Requires python and R.
-RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
+
+# =============================================================================
+# This stage exists to build obitools
+FROM base AS srv-obitools
+
+USER root
+# conda's GCC is on PATH and uses its own sysroot, so it won't find /usr/include/zlib.h.
+# Explicitly point CGo at conda's own zlib headers (installed by the conda zlib package).
+RUN curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/install_obitools.sh | bash -s -- --install-dir ${OBITOOLS_DIR}
+
+
+# =============================================================================
+# This stage consumes base and import the previous stages
+FROM base AS final
+
+USER root
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-obitools ${OBITOOLS_DIR} ${OBITOOLS_DIR}
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda ${CONDA_DIR} ${CONDA_DIR}
+COPY --chown=${NB_USER}:${NB_USER} --from=srv-r ${R_LIBS_USER} ${R_LIBS_USER}
+COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-conda.sh
+COPY --chown=${NB_USER}:${NB_USER} . ${REPO_DIR}/
+
+# set the path
+ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
 
 # clear out /tmp
-USER root
 RUN rm -rf /tmp/*
 # Remove the pip cache created as part of installing mambaforge
 RUN rm -rf /root/.cache
 
 USER ${NB_USER}
+# Install IR kernelspec. Requires python and R.
+RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
 WORKDIR /home/${NB_USER}
 
 EXPOSE 8888
