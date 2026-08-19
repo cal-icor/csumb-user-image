@@ -18,7 +18,7 @@ ENV CONDA_DIR=/srv/conda
 ENV R_LIBS_USER=/srv/r
 #ENV BIOINFORMATICS_DIR=/srv/bioinformatics
 ENV BIOINFORMATICS_DIR=/srv/conda/envs/bioinformatics
-ENV MOLECULARECOLOGY_DIR=/srv/molecularecology
+ENV MOLECULARECOLOGY_DIR=/srv/conda/envs/molecularecology
 ENV OBITOOLS_DIR=/srv/obitools
 
 # capture default path so we can set the path succinctly later
