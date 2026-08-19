@@ -214,16 +214,16 @@ RUN mamba clean -afy
 
 # =============================================================================
 # This stage exists to build /srv/molecularecology.
-FROM base AS molecularecology
+# FROM base AS molecularecology
 
-USER root
-RUN install -d -o ${NB_USER} -g ${NB_USER} ${MOLECULARECOLOGY_DIR}
+# USER root
+# RUN install -d -o ${NB_USER} -g ${NB_USER} ${MOLECULARECOLOGY_DIR}
 
-# install molecularecology packages
-ENV PATH=${CONDA_DIR}/bin:$PATH
-COPY molecularecology.yaml /tmp/molecularecology.yaml
-COPY molecularecology-install.sh /tmp/molecularecology-install.sh
-RUN /tmp/molecularecology-install.sh
+# # install molecularecology packages
+# ENV PATH=${CONDA_DIR}/bin:$PATH
+# COPY molecularecology.yaml /tmp/molecularecology.yaml
+# COPY molecularecology-install.sh /tmp/molecularecology-install.sh
+# RUN /tmp/molecularecology-install.sh
 
 
 # =============================================================================
@@ -242,7 +242,7 @@ FROM base AS final
 
 USER root
 # COPY --chown=${NB_USER}:${NB_USER} --from=bioinformatics ${BIOINFORMATICS_DIR} ${BIOINFORMATICS_DIR}
-COPY --chown=${NB_USER}:${NB_USER} --from=molecularecology ${MOLECULARECOLOGY_DIR} ${MOLECULARECOLOGY_DIR}
+# COPY --chown=${NB_USER}:${NB_USER} --from=molecularecology ${MOLECULARECOLOGY_DIR} ${MOLECULARECOLOGY_DIR}
 COPY --chown=${NB_USER}:${NB_USER} --from=obitools ${OBITOOLS_DIR} ${OBITOOLS_DIR}
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda ${CONDA_DIR} ${CONDA_DIR}
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-r ${R_LIBS_USER} ${R_LIBS_USER}
@@ -250,7 +250,7 @@ COPY --chown=${NB_USER}:${NB_USER} activate-conda.sh /etc/profile.d/activate-con
 COPY --chown=${NB_USER}:${NB_USER} . ${REPO_DIR}/
 
 # Set up symlinks to the conda environments so they can be activated by name
-RUN ln -s ${MOLECULARECOLOGY_DIR} ${CONDA_DIR}/envs/molecularecology
+# RUN ln -s ${MOLECULARECOLOGY_DIR} ${CONDA_DIR}/envs/molecularecology
 # RUN ln -s ${BIOINFORMATICS_DIR} ${CONDA_DIR}/envs/bioinformatics
 
 ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}:/usr/lib/rstudio-server/bin
