@@ -195,6 +195,12 @@ COPY bioinformatics.yaml /tmp/bioinformatics.yaml
 COPY bioinformatics-install.sh /tmp/bioinformatics-install.sh
 RUN /tmp/bioinformatics-install.sh
 
+# install molecularecology packages
+ENV PATH=${CONDA_DIR}/bin:$PATH
+COPY molecularecology.yaml /tmp/molecularecology.yaml
+COPY molecularecology-install.sh /tmp/molecularecology-install.sh
+RUN /tmp/molecularecology-install.sh
+
 RUN mamba clean -afy
 
 
