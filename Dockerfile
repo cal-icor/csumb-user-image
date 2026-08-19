@@ -226,7 +226,6 @@ ENV PATH=${OBITOOLS_DIR}/bin:${CONDA_DIR}/bin:${R_LIBS_USER}/bin:${DEFAULT_PATH}
 
 USER ${NB_USER}
 # installing chromium browser to enable webpdf conversion using nbconvert
-# ENV PLAYWRIGHT_BROWSERS_PATH=${CONDA_DIR}
 RUN playwright install chromium
 
 # https://github.com/berkeley-dsep-infra/datahub/issues/5827
