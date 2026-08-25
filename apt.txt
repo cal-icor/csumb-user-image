@@ -92,3 +92,6 @@ man
 
 # R package magick
 libmagick++-dev
+
+# for R package DescTools
+libuv1-dev
