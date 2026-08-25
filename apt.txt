@@ -64,7 +64,6 @@ fonts-noto-color-emoji
 
 # for rstudio
 psmisc
-sudo
 libapparmor1
 lsb-release
 libclang-dev
@@ -92,6 +91,4 @@ libmysqlclient-dev
 man
 
 # R package magick
-# Unknown requirement. Perhaps remove this and the R magick package during a
-# maintenance period.
 libmagick++-dev
