@@ -181,7 +181,7 @@ USER ${NB_USER}
 # Install Conda packages
 ENV PATH=${CONDA_DIR}/bin:$PATH
 COPY environment.yml /tmp/environment.yml
-RUN mamba env update -q -p ${CONDA_DIR} -f /tmp/environment.yml
+RUN mamba env update -q -p ${CONDA_DIR} --file="/tmp/environment.yml"
 
 # Register the SageMath Jupyter kernel so it appears in the launcher.
 # The conda-forge sagelib `sage` wrapper does not accept `-python`; invoke the
@@ -198,7 +198,13 @@ ENV PATH=${CONDA_DIR}/bin:$PATH
 COPY molecularecology-install.sh /tmp/molecularecology-install.sh
 RUN /tmp/molecularecology-install.sh
 
+# clean up conda caches and remove unnecessary files to reduce image size
+# inspired by https://jcristharif.com/conda-docker-tips.html
+# this brings the image size from 20.6G to 19.2G
 RUN mamba clean -afy
+RUN find ${CONDA_DIR}/ -follow -type f -name '*.a' -delete \
+    && find ${CONDA_DIR}/ -follow -type f -name '*.pyc' -delete \
+    && find ${CONDA_DIR}/ -follow -type f -name '*.js.map' -delete
 
 # installing chromium browser to enable webpdf conversion using nbconvert
 RUN playwright install chromium

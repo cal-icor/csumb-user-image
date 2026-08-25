@@ -6,5 +6,5 @@ ENV_DEF="https://raw.githubusercontent.com/qiime2/distributions/refs/heads/dev/2
 curl --silent --location --fail ${ENV_DEF} > /tmp/$(basename ${ENV_DEF})
 ENV_FILE="/tmp/$(basename ${ENV_DEF})"
 sed -i '1iname: molecularecology' ${ENV_FILE}
-mamba env create -y -q -f ${ENV_FILE}
+mamba env create -y -q --file=${ENV_FILE}
 mamba clean -afy
