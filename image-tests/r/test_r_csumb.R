@@ -6,14 +6,20 @@ packages <- c(
     "DescTools",
     "datasauRus",
     "fivethirtyeight",
+    "fosdata",
     "ggwordcloud",
+    "magick",
+    "mapproj",
+    "maps",
     "reticulate",
     "pbdZMQ",
     "sweep",
     "tidyquant",
     "tidyverse",
     "timetk",
+    "unvotes",
     "viridis",
+    "waffle",
     "zipcodeR"
 )
 
