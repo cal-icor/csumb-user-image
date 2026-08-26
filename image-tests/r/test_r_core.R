@@ -9,7 +9,7 @@ if (grepl("conda", r_home, fixed = TRUE)) {
 }
 
 # Verify the pinned R version matches what is in the image spec.
-expected_version <- "4.5.1"
+expected_version <- "4.6.1"
 actual_version <- paste(R.version$major, R.version$minor, sep = ".")
 if (!startsWith(actual_version, expected_version)) {
     stop(paste("R version mismatch. Expected:", expected_version, "Got:", actual_version))
@@ -26,11 +26,13 @@ packages <- c(
     "RColorBrewer",
     "car",
     "colorspace",
+    "devtools",
     "esquisse",
     "extrafont",
     "flexdashboard",
     "forcats",
     "forecast",
+    "gdalcubes",
     "ggThemeAssist",
     "ggalluvial",
     "ggbeeswarm",
@@ -39,6 +41,7 @@ packages <- c(
     "ggformula",
     "gghighlight",
     "ggmosaic",
+    "ggplot2",
     "ggpubr",
     "ggrepel",
     "ggridges",
@@ -50,6 +53,8 @@ packages <- c(
     "knitr",
     "leaflet",
     "lubridate",
+    "mapgl",
+    "minioclient",
     "mosaic",
     "naniar",
     "nycflights13",
@@ -57,12 +62,17 @@ packages <- c(
     "palmerpenguins",
     "plotly",
     "pwr",
+    "quarto",
+    "remotes",
+    "renv",
     "rmarkdown",
+    "rstac",
     "scales",
     "see",
     "sf",
     "sjPlot",
     "socviz",
+    "stars",
     "terra",
     "tidymodels",
     "tidyr",
