@@ -45,7 +45,6 @@ packages = list(
   "forcats" = "1.0.0", # https://github.com/cal-icor/cal-icor-hubs/issues/294
   "forecast" = "8.24.0", # https://github.com/cal-icor/csumb-user-image/issues/25
   "gdalcubes" = "0.7.0",
-  "ggThemeAssist" = "0.1.5", # https://github.com/cal-icor/cal-icor-hubs/issues/294
   "ggalluvial" = "0.12.5", # https://github.com/cal-icor/csumb-user-image/issues/1
   "ggbeeswarm" = "0.7.2", # https://github.com/cal-icor/csumb-user-image/issues/25
   "ggcorrplot" = "0.1.4.1", # https://github.com/cal-icor/csumb-user-image/issues/25
