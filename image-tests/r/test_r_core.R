@@ -9,7 +9,7 @@ if (grepl("conda", r_home, fixed = TRUE)) {
 }
 
 # Verify the pinned R version matches what is in the image spec.
-expected_version <- "4.6.1"
+expected_version <- "4.5.1"
 actual_version <- paste(R.version$major, R.version$minor, sep = ".")
 if (!startsWith(actual_version, expected_version)) {
     stop(paste("R version mismatch. Expected:", expected_version, "Got:", actual_version))

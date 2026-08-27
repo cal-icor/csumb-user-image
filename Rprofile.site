@@ -6,7 +6,7 @@
 # below sets it to be binary. This may improve image build times.
 # If it works, it'd be better to dynamically set the R version as above, and
 # also the RStudio Server version if possible.
-options(HTTPUserAgent = "RStudio Server (2026.08.1.195); R (4.6.1 x86_64-pc-linux-gnu x86_64 linux-gnu)")
+options(HTTPUserAgent = "RStudio Server (2025.09.1.401); R (4.5.1 x86_64-pc-linux-gnu x86_64 linux-gnu)")
 
 ## Source extra Rprofile files.
 #
