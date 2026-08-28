@@ -52,7 +52,7 @@ def test_rstudio_console_present(rstudio_page: Page):
 def test_rstudio_r_version(rstudio_page: Page):
     """R version shown in the console header matches the pinned version."""
     expect(rstudio_page.locator("#rstudio_console_interpreter_version")).to_have_text(
-        re.compile(r"R 4\.5\.1"),
+        re.compile(r"R 4\.6\.1"),
         timeout=CONSOLE_READY_TIMEOUT,
     )
 

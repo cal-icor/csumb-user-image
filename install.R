@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 r = getOption("repos")
-r["CRAN"] = "https://packagemanager.posit.co/cran/__linux__/noble/2025-10-23"
+r["CRAN"] = "https://packagemanager.posit.co/cran/__linux__/noble/2026-08-01"
 options(repos = r)
 
 # Function to install R packages
@@ -51,7 +51,6 @@ packages = list(
   "ggdist" = "3.3.3", # https://github.com/cal-icor/csumb-user-image/issues/25
   "ggformula" = "0.12.0", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "gghighlight" = "0.5.0", # https://github.com/cal-icor/csumb-user-image/issues/25
-  "ggmosaic" = "0.3.3", # https://github.com/cal-icor/csumb-user-image/issues/1
   "ggplot2" = "4.0.2",
   "ggpubr" = "0.6.2", # https://github.com/cal-icor/base-user-image/issues/112
   "ggrepel" = "0.9.6", # https://github.com/cal-icor/csumb-user-image/issues/1
@@ -106,6 +105,7 @@ packages = list(
 install_packages_with_versions(packages)
 
 # install GitHub packages
+remotes::install_github("haleyjeppson/ggmosaic", lib = "/srv/r") # https://github.com/cal-icor/csumb-user-image/issues/1
 remotes::install_github("hrbrmstr/waffle", lib = "/srv/r") # https://github.com/cal-icor/cal-icor-hubs/issues/294
 remotes::install_github("speegled/fosdata", lib = "/srv/r") # https://github.com/cal-icor/base-user-image/issues/117
 #IRkernel::installspec(user = FALSE, prefix='/srv/conda')
