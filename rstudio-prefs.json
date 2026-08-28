@@ -11,5 +11,6 @@
     "save_workspace": "never",
     "load_workspace": false,
     "assistant": "none",
-    "chat_provider": "none"
+    "chat_provider": "none",
+    "assistant_toolbar_button_visible": false
 }
