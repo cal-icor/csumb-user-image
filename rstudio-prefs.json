@@ -9,5 +9,7 @@
     "auto_save_idle_ms": 500,
     "copilot-enabled": 0,
     "save_workspace": "never",
-    "load_workspace": false
+    "load_workspace": false,
+    "assistant": "none",
+    "chat_provider": "none"
 }
