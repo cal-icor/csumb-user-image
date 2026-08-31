@@ -36,6 +36,7 @@ zip
 
 # for nbconvert
 pandoc
+texlive-luatex
 texlive-xetex
 texlive-fonts-recommended
 texlive-lang-chinese
