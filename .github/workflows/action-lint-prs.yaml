@@ -4,4 +4,4 @@ on:
 
 jobs:
   lint:
-    uses: cal-icor/shared-workflows/.github/workflows/action-lint-prs.yaml@0.5.0
+    uses: cal-icor/shared-workflows/.github/workflows/action-lint-prs.yaml@0.5.3
