@@ -7,6 +7,7 @@ packages <- c(
     "datasauRus",
     "fivethirtyeight",
     "fosdata",
+    "ggiraph",
     "ggwordcloud",
     "magick",
     "mapproj",

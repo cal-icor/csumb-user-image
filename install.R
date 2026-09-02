@@ -51,6 +51,7 @@ packages = list(
   "ggdist" = "3.3.3", # https://github.com/cal-icor/csumb-user-image/issues/25
   "ggformula" = "0.12.0", # https://github.com/cal-icor/cal-icor-hubs/issues/163
   "gghighlight" = "0.5.0", # https://github.com/cal-icor/csumb-user-image/issues/25
+  "ggiraph" = "0.9.6", # https://github.com/cal-icor/csumb-user-image/issues/123
   "ggplot2" = "4.0.2",
   "ggpubr" = "0.6.2", # https://github.com/cal-icor/base-user-image/issues/112
   "ggrepel" = "0.9.6", # https://github.com/cal-icor/csumb-user-image/issues/1
