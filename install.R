@@ -57,7 +57,6 @@ packages = list(
   "ggrepel" = "0.9.6", # https://github.com/cal-icor/csumb-user-image/issues/1
   "ggridges" = "0.5.7", # https://github.com/cal-icor/csumb-user-image/issues/25
   "ggtext" = "0.1.2", # https://github.com/cal-icor/csumb-user-image/issues/25
-  "ggThemeAssist" = "0.1.5", # https://github.com/cal-icor/cal-icor-hubs/issues/294
   "ggthemes" = "5.1.0", # https://github.com/cal-icor/csumb-user-image/issues/1
   "ggwordcloud" = "0.6.2", # https://github.com/cal-icor/csumb-user-image/issues/104
   "gridExtra" = "2.3", # https://github.com/cal-icor/csumb-user-image/issues/25
@@ -106,6 +105,7 @@ packages = list(
 install_packages_with_versions(packages)
 
 # install GitHub packages
+remotes::install_github("timmarchand/ggthemeassist", lib = "/srv/r") # https://github.com/cal-icor/csumb-user-image/issues/125
 remotes::install_github("haleyjeppson/ggmosaic", lib = "/srv/r") # https://github.com/cal-icor/csumb-user-image/issues/1
 remotes::install_github("hrbrmstr/waffle", lib = "/srv/r") # https://github.com/cal-icor/cal-icor-hubs/issues/294
 remotes::install_github("speegled/fosdata", lib = "/srv/r") # https://github.com/cal-icor/base-user-image/issues/117
