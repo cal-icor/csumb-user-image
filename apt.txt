@@ -96,3 +96,6 @@ libmagick++-dev
 
 # for R package DescTools
 libuv1-dev
+
+# for R package topicmodels
+libgsl-dev
