@@ -69,6 +69,7 @@ COPY apt.txt /tmp/apt.txt
 RUN apt-get -qq update --yes && \
     apt-get -qq install --yes --no-install-recommends \
         $(grep -v ^# /tmp/apt.txt) && \
+    apt-get -qq install --yes --only-upgrade ca-certificates && \
     apt-get -qq purge && \
     apt-get -qq clean && \
     rm -rf /var/lib/apt/lists/*
@@ -202,6 +203,13 @@ RUN /tmp/bioinformatics-install.sh
 ENV PATH=${CONDA_DIR}/bin:$PATH
 COPY molecularecology-install.sh /tmp/molecularecology-install.sh
 RUN /tmp/molecularecology-install.sh
+
+# eMudhra CA distrust; qiime2 env file pins ca-certificates=2026.2.25.
+# bioinformatics is python 3.8 (new certifi needs >=3.10) and has no certifi.
+RUN for e in "-p ${CONDA_DIR}" "-n molecularecology"; do \
+      mamba install -q -y $e "ca-certificates>=2026.10.19" "certifi>=2026.10.19" || exit 1; \
+    done && \
+    mamba install -q -y -n bioinformatics "ca-certificates>=2026.10.19"
 
 # clean up conda caches and remove unnecessary files to reduce image size
 # inspired by https://jcristharif.com/conda-docker-tips.html
