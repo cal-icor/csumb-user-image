@@ -154,6 +154,10 @@ USER ${NB_USER}
 COPY --chown=${NB_USER}:${NB_USER} install-miniforge.bash /tmp/install-miniforge.bash
 RUN /tmp/install-miniforge.bash
 
+# set the pip cache dir to something reasonable
+ENV PIP_CACHE_DIR=${CONDA_DIR}/pip_cache
+RUN mkdir -p ${PIP_CACHE_DIR}
+
 
 # =============================================================================
 # This stage exists to build /srv/r.
@@ -188,6 +192,8 @@ USER ${NB_USER}
 ENV PATH=${CONDA_DIR}/bin:$PATH
 COPY environment.yml /tmp/environment.yml
 RUN mamba env update -q -p ${CONDA_DIR} --file="/tmp/environment.yml"
+# save below for when miniforge is updated
+# RUN conda env update -q -p ${CONDA_DIR} --file="/tmp/environment.yml"
 
 # Register the SageMath Jupyter kernel so it appears in the launcher.
 # The conda-forge sagelib `sage` wrapper does not accept `-python`; invoke the
@@ -205,11 +211,11 @@ COPY molecularecology-install.sh /tmp/molecularecology-install.sh
 RUN /tmp/molecularecology-install.sh
 
 # eMudhra CA distrust; qiime2 env file pins ca-certificates=2026.2.25.
+# also update brotli & friends for http2shell cve
 # bioinformatics is python 3.8 (new certifi needs >=3.10) and has no certifi.
-RUN for e in "-p ${CONDA_DIR}" "-n molecularecology"; do \
-      mamba install -q -y $e "ca-certificates>=2026.10.19" "certifi>=2026.10.19" || exit 1; \
-    done && \
-    mamba install -q -y -n bioinformatics "ca-certificates>=2026.10.19"
+RUN mamba install -q -y -p ${CONDA_DIR} "ca-certificates>=2026.10.19" "certifi>=2026.10.19" && \
+    mamba install -q -y -n bioinformatics "ca-certificates>=2026.10.19" && \
+    mamba install -q -y -n molecularecology "ca-certificates>=2026.10.19" "certifi>=2026.10.19" "brotli-python>=1.2.1" "brotlicffi>=1.2.1.0"
 
 # clean up conda caches and remove unnecessary files to reduce image size
 # inspired by https://jcristharif.com/conda-docker-tips.html
@@ -218,6 +224,12 @@ RUN mamba clean -afy
 RUN find ${CONDA_DIR}/ -follow -type f -name '*.a' -delete \
     && find ${CONDA_DIR}/ -follow -type f -name '*.pyc' -delete \
     && find ${CONDA_DIR}/ -follow -type f -name '*.js.map' -delete
+
+# empty conda history file,
+# which seems to result in some effective pinning of packages in the initial env,
+# which we don't intend.
+# this file must not be *removed*, however
+RUN echo '' > ${CONDA_DIR}/conda-meta/history
 
 # installing chromium browser to enable webpdf conversion using nbconvert
 RUN playwright install chromium
@@ -244,11 +256,6 @@ RUN for x in \
   reditorsupport.r \
   ; do code-server --extensions-dir ${VSCODE_EXTENSIONS} --install-extension $x; done
 
-# set the pip cache dir to something reasonable
-ENV PIP_CACHE_DIR=${CONDA_DIR}/envs/notebook/pip_cache
-RUN mkdir -p ${PIP_CACHE_DIR}
-
-
 # =============================================================================
 # This stage exists to build obitools
 FROM base AS srv-obitools
@@ -264,6 +271,8 @@ RUN curl -L https://raw.githubusercontent.com/metabarcoding/obitools4/master/ins
 FROM base AS final
 
 USER root
+# /srv/conda from base would survive the COPY below and keep removed packages
+RUN rm -rf ${CONDA_DIR}
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-obitools ${OBITOOLS_DIR} ${OBITOOLS_DIR}
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-conda ${CONDA_DIR} ${CONDA_DIR}
 COPY --chown=${NB_USER}:${NB_USER} --from=srv-r ${R_LIBS_USER} ${R_LIBS_USER}
