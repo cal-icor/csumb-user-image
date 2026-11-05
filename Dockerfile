@@ -290,6 +290,17 @@ RUN rm -rf /root/.cache
 USER ${NB_USER}
 # Install IR kernelspec. Requires python and R.
 RUN R -e "IRkernel::installspec(user = FALSE, prefix='${CONDA_DIR}')"
+
+# requied when exporting pdfs
+# See https://jira-secure.berkeley.edu/browse/DH-305
+ENV PLAYWRIGHT_BROWSERS_PATH=${CONDA_DIR}
+
+# set the pip cache dir to somewhere reasonable
+ENV PIP_CACHE_DIR=${CONDA_DIR}/pip_cache
+
+# Set vscode proxy URI template
+ENV VSCODE_PROXY_URI="../proxy/absolute/{{port}}/"
+
 WORKDIR /home/${NB_USER}
 
 EXPOSE 8888
